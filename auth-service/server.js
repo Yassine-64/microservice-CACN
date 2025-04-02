@@ -9,7 +9,7 @@ const app = express();
 
 app.use(express.json());
 
-// Database connection
+
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
@@ -19,11 +19,11 @@ mongoose
     console.error("❌ Error connecting to MongoDB:", error.message);
   });
 
-// la méthode register permettera de créer et d'ajouter un nouvel utilisateur à la base de données
+
 app.post("/auth/register", async (req, res) => {
   let { nom, email, mot_passe } = req.body;
 
-  // On vérifie si le nouvel utilisateur est déjà inscrit avec la même adresse email ou pas
+  
   const userExists = await Utilisateur.findOne({ email });
   if (userExists) {
     return res.json({ message: "Cet utilisateur existe déjà" });
@@ -50,7 +50,7 @@ app.post("/auth/register", async (req, res) => {
   }
 });
 
-// la méthode login permettra de retourner un token après vérification de l'email et du mot de passe
+
 app.post("/auth/login", async (req, res) => {
   const { email, mot_passe } = req.body;
   const utilisateur = await Utilisateur.findOne({ email });
