@@ -8,7 +8,7 @@ const app = express();
 
 app.use(express.json());
 
-// Db connection
+
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
@@ -18,14 +18,14 @@ mongoose
     console.error("Error connecting to MongoDB:", error.message);
   });
 
-// Routes
 
-// 1. POST /produit/acheter - Search for products to buy by IDs
+
+
 app.post("/produit/acheter", isAuthenticated, async (req, res) => {
   try {
     const { ids } = req.body;
 
-    // Find products with the given IDs
+    
     const produits = await Product.find({ _id: { $in: ids } });
 
     res.status(200).json(produits);
@@ -34,17 +34,17 @@ app.post("/produit/acheter", isAuthenticated, async (req, res) => {
   }
 });
 
-// 2. POST /produit/ajouter - Add a new product
+
 app.post("/produit/ajouter", isAuthenticated, async (req, res) => {
   try {
-    // Get product data from request body
+    
     const productData = {
       nom: req.body.nom,
       description: req.body.description,
       prix: req.body.prix,
     };
 
-    // Create new product
+    
     const newProduct = new Product(productData);
     const savedProduct = await newProduct.save();
 
