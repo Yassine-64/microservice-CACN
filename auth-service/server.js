@@ -5,10 +5,10 @@ const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
 const Utilisateur = require("./models/Utilisateur");
+const isAuthenticated = require("./isAuthenticated");
 const app = express();
 
 app.use(express.json());
-
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -19,11 +19,9 @@ mongoose
     console.error("❌ Error connecting to MongoDB:", error.message);
   });
 
-
 app.post("/auth/register", async (req, res) => {
   let { nom, email, mot_passe } = req.body;
 
-  
   const userExists = await Utilisateur.findOne({ email });
   if (userExists) {
     return res.json({ message: "Cet utilisateur existe déjà" });
@@ -50,7 +48,6 @@ app.post("/auth/register", async (req, res) => {
   }
 });
 
-
 app.post("/auth/login", async (req, res) => {
   const { email, mot_passe } = req.body;
   const utilisateur = await Utilisateur.findOne({ email });
@@ -73,6 +70,29 @@ app.post("/auth/login", async (req, res) => {
         });
       }
     });
+  }
+});
+
+// Obtenir le profil de l'utilisateur connecté
+app.get("/auth/profil", isAuthenticated, async (req, res) => {
+  try {
+    const utilisateur = await Utilisateur.findOne({ email: req.user.email });
+
+    if (!utilisateur) {
+      return res.status(404).json({ message: "Utilisateur introuvable" });
+    }
+
+    // Ne pas renvoyer le mot de passe
+    const userProfile = {
+      _id: utilisateur._id,
+      nom: utilisateur.nom,
+      email: utilisateur.email,
+      created_at: utilisateur.created_at,
+    };
+
+    res.status(200).json(userProfile);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 });
 
