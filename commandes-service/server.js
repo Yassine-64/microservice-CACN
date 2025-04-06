@@ -39,7 +39,7 @@ async function verifierProduits(items, token) {
 
     // Récupérer les produits depuis le service Produit
     const response = await axios.post(
-      "http://localhost:4000/produit/acheter",
+      "http://127.0.0.1:4000/produit/acheter",
       { ids },
       {
         headers: {
@@ -89,7 +89,7 @@ async function mettreAJourStock(items, token) {
     for (let item of items) {
       // Récupérer le produit actuel pour connaître son stock
       const produitResponse = await axios.get(
-        `http://localhost:4000/produit/${item.produit_id}`,
+        `http://127.0.0.1:4000/produit/${item.produit_id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -102,7 +102,7 @@ async function mettreAJourStock(items, token) {
 
       // Mettre à jour le stock
       await axios.patch(
-        `http://localhost:4000/produit/${item.produit_id}/stock`,
+        `http://127.0.0.1:4000/produit/${item.produit_id}/stock`,
         { stock: nouveauStock },
         {
           headers: {
@@ -202,7 +202,7 @@ app.patch("/commande/:id/statut", isAuthenticated, async (req, res) => {
 
         // Créer une livraison
         await axios.post(
-          "http://localhost:4003/livraison/ajouter",
+          "http://127.0.0.1:4003/livraison/ajouter",
           {
             commande_id: commande._id,
             transporteur_id: "system", // À remplacer par un vrai transporteur

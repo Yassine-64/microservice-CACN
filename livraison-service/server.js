@@ -26,7 +26,7 @@ app.post("/livraison/ajouter", isAuthenticated, async (req, res) => {
     // Vérifier que la commande existe
     try {
       const commandeResponse = await axios.get(
-        `http://localhost:4001/commande/${commande_id}`,
+        `http://127.0.0.1:4001/commande/${commande_id}`,
         {
           headers: {
             Authorization: req.headers.authorization,
@@ -70,7 +70,7 @@ app.post("/livraison/ajouter", isAuthenticated, async (req, res) => {
     // Mettre à jour le statut de la commande si ce n'est pas déjà fait
     try {
       await axios.patch(
-        `http://localhost:4001/commande/${commande_id}/statut`,
+        `http://127.0.0.1:4001/commande/${commande_id}/statut`,
         { statut: "Expédiée" },
         {
           headers: {
