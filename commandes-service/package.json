@@ -1,7 +1,7 @@
 {
   "name": "commandes-service",
   "version": "1.0.0",
-  "description": "Commande microservice",
+  "description": "Order microservice - Manages customer orders and handles product stock verification",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -18,3 +18,4 @@
     "nodemon": "^3.1.9"
   }
 }
+
