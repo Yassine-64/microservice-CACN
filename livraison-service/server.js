@@ -38,23 +38,55 @@ app.post("/livraison/ajouter", isAuthenticated, async (req, res) => {
       if (!commandeResponse.data) {
         return res.status(404).json({ message: "Commande introuvable" });
       }
+
+      // Vérifier que la commande est dans un état qui permet la livraison
+      const commande = commandeResponse.data;
+      if (commande.statut !== "Expédiée" && commande.statut !== "Confirmée") {
+        return res.status(400).json({
+          message:
+            "La commande doit être confirmée ou expédiée pour créer une livraison",
+        });
+      }
     } catch (error) {
-      // En cas d'erreur, on considère que la commande n'existe pas ou que le service est indisponible
       console.error(
         "Erreur lors de la vérification de la commande:",
         error.message
       );
-      // On continue quand même pour le test
+      return res.status(400).json({
+        message: "Impossible de vérifier la commande",
+        error: error.message,
+      });
     }
 
     const newLivraison = new Livraison({
       commande_id,
       transporteur_id,
-      statut: "en attente",
+      statut: "En attente",
       adresse_livraison,
     });
 
     const savedLivraison = await newLivraison.save();
+
+    // Mettre à jour le statut de la commande si ce n'est pas déjà fait
+    try {
+      await axios.patch(
+        `http://localhost:4001/commande/${commande_id}/statut`,
+        { statut: "Expédiée" },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: req.headers.authorization,
+          },
+        }
+      );
+    } catch (error) {
+      console.error(
+        "Erreur lors de la mise à jour du statut de la commande:",
+        error.message
+      );
+      // On continue malgré l'erreur pour ne pas bloquer la création de la livraison
+    }
+
     res.status(201).json(savedLivraison);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -67,7 +99,7 @@ app.put("/livraison/:id", isAuthenticated, async (req, res) => {
     const { statut } = req.body;
     const { id } = req.params;
 
-    if (!["en attente", "en cours", "livrée", "annulée"].includes(statut)) {
+    if (!["En attente", "En cours", "Livrée"].includes(statut)) {
       return res.status(400).json({ message: "Statut de livraison invalide" });
     }
 
