@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Authentication Service - Manages users and authentication",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
@@ -18,4 +18,4 @@
     "mongoose": "^8.2.1",
     "nodemon": "^3.1.0"
   }
-}
+} 
