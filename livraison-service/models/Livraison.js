@@ -12,8 +12,8 @@ const LivraisonSchema = mongoose.Schema({
   statut: {
     type: String,
     required: true,
-    enum: ["en attente", "en cours", "livrée", "annulée"],
-    default: "en attente",
+    enum: ["En attente", "En cours", "Livrée"],
+    default: "En attente",
   },
   adresse_livraison: {
     type: String,
